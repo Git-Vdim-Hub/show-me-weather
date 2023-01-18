@@ -6,7 +6,7 @@ var lon;
 var lat;
 var units;
 
-function getWeather(lat, lon, cardNumber) {
+function getForecast(lat, lon, cardNumber) {
     lat = lat;
     lon = lon;
     units = 'imperial';
@@ -54,7 +54,21 @@ function getWeather(lat, lon, cardNumber) {
               wxIcon3 = data.list[16].weather[0].icon;
               humidity3 = data.list[16].main.humidity;
               when3 = data.list[16].dt_txt;
-              displayWeather(wxIcon1, temp1, wind1, humidity1, when1, wxIcon2, temp2, wind2, humidity2, when2, wxIcon3, temp3, wind3, humidity3, when3, cardNumber);
+
+              temp4 = data.list[24].main.temp;
+              wind4 = data.list[24].wind.speed;
+              wxIcon4 = data.list[24].weather[0].icon;
+              humidity4 = data.list[24].main.humidity;
+              when4 = data.list[24].dt_txt;
+
+              temp5 = data.list[32].main.temp;
+              wind5 = data.list[32].wind.speed;
+              wxIcon5 = data.list[32].weather[0].icon;
+              humidity5 = data.list[32].main.humidity;
+              when5 = data.list[32].dt_txt;
+              displayForecast(wxIcon1, temp1, wind1, humidity1, when1, wxIcon2, temp2,
+                 wind2, humidity2, when2, wxIcon3, temp3, wind3, humidity3, when3, wxIcon4,
+                  temp4, wind4, humidity4, when4, wxIcon5, temp5, wind5, humidity5, when5);
             });
           } else{
             alert('Error: '+ response.statusText);
@@ -66,58 +80,44 @@ function getWeather(lat, lon, cardNumber) {
         })
 }
 
+getForecast(43.1566, -77.6088)
+
+
 function displayWeatherIcon(appendEl, iconCode){
     var imgEl = document.createElement("img");
     imgEl.src = `http://openweathermap.org/img/wn/${iconCode}.png`
     appendEl.appendChild(imgEl);
 }
 
-function displayDayWeather(functIcon, funcTemp, funcWind, funcHumidity, funcWhen){
+function displayDayForecast(functIcon, funcTemp, funcWind, funcHumidity, funcWhen, dayNum){
     var mark = funcWhen;
-    wxDateP = document.createElement('p');
+    wxEl = document.querySelector(`#day${dayNum}`);
+    wxDateP = document.createElement('h6');
+    wxDateP.classList.add('card-title');
     wxIconP = document.createElement('p');
     wxTempP = document.createElement('p');
     wxWindP = document.createElement('p');
     wxHumP = document.createElement('p');
-    wxDateP.innerHTML = `${dayjs(mark).format('ddd, D MMM')}`;
+    wxDateP.innerHTML = `${dayjs(mark).format('ddd, D MMM YY')}`;
     displayWeatherIcon(wxIconP, functIcon);
     wxTempP.innerHTML = `Temp: ${funcTemp} °F`;
     wxWindP.innerHTML = `Wind: ${funcWind} MPH`;
     wxHumP.innerHTML = `Humidity: ${funcHumidity} %`;
+    wxEl.appendChild(wxDateP);
+    wxEl.appendChild(wxIconP);
+    wxEl.appendChild(wxTempP);
+    wxEl.appendChild(wxWindP);
+    wxEl.appendChild(wxHumP);
 }
 
-function displayWeather(functIcon1, funcTemp1, funcWind1, funcHumidity1, funcWhen1, functIcon2, funcTemp2, funcWind2, funcHumidity2, funcWhen2, functIcon3, funcTemp3, funcWind3, funcHumidity3, funcWhen3, cardNumber){
-    wxEla = document.querySelector(`#wx-${cardNumber}a`);
-    wxElb = document.querySelector(`#wx-${cardNumber}b`);
-    wxElc = document.querySelector(`#wx-${cardNumber}c`);
-    wxDay1Div = document.createElement('div');
-    wxDay2Div = document.createElement('div');
-    wxDay3Div = document.createElement('div');
-    wxDay1Div.classList.add('card-body');
-    wxDay2Div.classList.add('card-body');
-    wxDay3Div.classList.add('card-body');
-    wxEla.appendChild(wxDay1Div);
-    displayDayWeather(functIcon1, funcTemp1, funcWind1, funcHumidity1, funcWhen1);
-    wxDay1Div.appendChild(wxDateP);
-    wxDay1Div.appendChild(wxIconP);
-    wxDay1Div.appendChild(wxTempP);
-    wxDay1Div.appendChild(wxWindP);
-    wxDay1Div.appendChild(wxHumP);
-    wxElb.appendChild(wxDay2Div);
-    displayDayWeather(functIcon2, funcTemp2, funcWind2, funcHumidity2, funcWhen2);
-    wxDay2Div.appendChild(wxDateP);
-    wxDay2Div.appendChild(wxIconP);
-    wxDay2Div.appendChild(wxTempP);
-    wxDay2Div.appendChild(wxWindP);
-    wxDay2Div.appendChild(wxHumP);
-    wxElc.appendChild(wxDay3Div);
-    displayDayWeather(functIcon3, funcTemp3, funcWind3, funcHumidity3, funcWhen3);
-    wxDay3Div.appendChild(wxDateP);
-    wxDay3Div.appendChild(wxIconP);
-    wxDay3Div.appendChild(wxTempP);
-    wxDay3Div.appendChild(wxWindP);
-    wxDay3Div.appendChild(wxHumP);
-  
+function displayForecast(functIcon1, funcTemp1, funcWind1, funcHumidity1, funcWhen1, functIcon2, funcTemp2,
+   funcWind2, funcHumidity2, funcWhen2, functIcon3, funcTemp3, funcWind3, funcHumidity3, funcWhen3,
+    functIcon4, funcTemp4, funcWind4, funcHumidity4, funcWhen4, functIcon5, funcTemp5, funcWind5, funcHumidity5, funcWhen5,){
+    displayDayForecast(functIcon1, funcTemp1, funcWind1, funcHumidity1, funcWhen1, 1);
+    displayDayForecast(functIcon2, funcTemp2, funcWind2, funcHumidity2, funcWhen2, 2);
+    displayDayForecast(functIcon3, funcTemp3, funcWind3, funcHumidity3, funcWhen3, 3);
+    displayDayForecast(functIcon4, funcTemp4, funcWind4, funcHumidity4, funcWhen4, 4);
+    displayDayForecast(functIcon5, funcTemp5, funcWind5, funcHumidity5, funcWhen5, 5);
   };
 
   function saveToLocalStorage(searchValue){
