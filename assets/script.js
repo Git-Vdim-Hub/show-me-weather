@@ -8,6 +8,8 @@ var cityInput = document.querySelector('#cityInput');
 
 searchButton.addEventListener('click', function(event){
   getWxLatLon(cityInput.value);
+  saveToLocalStorage(cityInput.value);
+  retrieveLocalStorage();
 });
 
 function getWxLatLon(cityName){
@@ -130,8 +132,8 @@ function displayWeatherIcon(appendEl, iconCode){
 
 function displayWeather(cityName, icon, temp, wind, hum){
   var date = dayjs().format('ddd, D MMM YY');
-  console.log (date);
   var weatherDisplay = document.querySelector('#day0');
+  weatherDisplay.innerHTML = '';
   var innerDiv = document.createElement('div');
   innerDiv.classList.add('card-body', 'border', 'border-success');
   var h4El = document.createElement('h4');
@@ -158,6 +160,7 @@ function displayWeather(cityName, icon, temp, wind, hum){
 function displayDayForecast(functIcon, funcTemp, funcWind, funcHumidity, funcWhen, dayNum){
     var mark = funcWhen;
     wxEl = document.querySelector(`#day${dayNum}`);
+    wxEl.innerHTML = '';
     wxDateP = document.createElement('h6');
     wxDateP.classList.add('card-title');
     wxIconP = document.createElement('p');
@@ -168,7 +171,7 @@ function displayDayForecast(functIcon, funcTemp, funcWind, funcHumidity, funcWhe
     wxWindP.classList.add('card-text', 'text-start');
     wxHumP = document.createElement('p');
     wxHumP.classList.add('card-text', 'text-start');
-    wxDateP.innerHTML = `${dayjs(mark).format('ddd, D MMM YY')}`;
+    wxDateP.innerHTML = `${dayjs(mark).format('ddd, D MMM YYYY')}`;
     displayWeatherIcon(wxIconP, functIcon);
     wxTempP.innerHTML = `Temp: ${funcTemp} °F`;
     wxWindP.innerHTML = `Wind: ${funcWind} MPH`;
@@ -181,40 +184,40 @@ function displayDayForecast(functIcon, funcTemp, funcWind, funcHumidity, funcWhe
 }
 
 function displayForecast(functIcon1, funcTemp1, funcWind1, funcHumidity1, funcWhen1, functIcon2, funcTemp2,
-   funcWind2, funcHumidity2, funcWhen2, functIcon3, funcTemp3, funcWind3, funcHumidity3, funcWhen3,
-    functIcon4, funcTemp4, funcWind4, funcHumidity4, funcWhen4, functIcon5, funcTemp5, funcWind5, funcHumidity5, funcWhen5,){
-    displayDayForecast(functIcon1, funcTemp1, funcWind1, funcHumidity1, funcWhen1, 1);
-    displayDayForecast(functIcon2, funcTemp2, funcWind2, funcHumidity2, funcWhen2, 2);
-    displayDayForecast(functIcon3, funcTemp3, funcWind3, funcHumidity3, funcWhen3, 3);
-    displayDayForecast(functIcon4, funcTemp4, funcWind4, funcHumidity4, funcWhen4, 4);
-    displayDayForecast(functIcon5, funcTemp5, funcWind5, funcHumidity5, funcWhen5, 5);
-  };
+  funcWind2, funcHumidity2, funcWhen2, functIcon3, funcTemp3, funcWind3, funcHumidity3, funcWhen3,
+  functIcon4, funcTemp4, funcWind4, funcHumidity4, funcWhen4, functIcon5, funcTemp5, funcWind5, funcHumidity5, funcWhen5,){
+  displayDayForecast(functIcon1, funcTemp1, funcWind1, funcHumidity1, funcWhen1, 1);
+  displayDayForecast(functIcon2, funcTemp2, funcWind2, funcHumidity2, funcWhen2, 2);
+  displayDayForecast(functIcon3, funcTemp3, funcWind3, funcHumidity3, funcWhen3, 3);
+  displayDayForecast(functIcon4, funcTemp4, funcWind4, funcHumidity4, funcWhen4, 4);
+  displayDayForecast(functIcon5, funcTemp5, funcWind5, funcHumidity5, funcWhen5, 5);
+};
 
-  function saveToLocalStorage(searchValue){
-    var number = JSON.parse(localStorage.getItem("searchNumber"));
-    if(number !== undefined && number !== null){
-      number++;
-      localStorage.setItem("searchNumber", JSON.stringify(number));
-      localStorage.setItem(`search${number}`, JSON.stringify(searchValue));
-    } else{
-      number = 1;
-      localStorage.setItem("searchNumber", JSON.stringify(number));
-      localStorage.setItem(`search${number}`, JSON.stringify(searchValue));
+function saveToLocalStorage(searchValue){
+  var storedArray = JSON.parse(localStorage.getItem("localStorage"));
+  if(storedArray !== undefined && storedArray !== null){
+    if(storedArray.includes(searchValue)){
+      return;
+    }
+    storedArray.push(searchValue);
+    localStorage.setItem('localStorage', JSON.stringify(storedArray));
+  } else{
+    storedArray=[searchValue];
+    localStorage.setItem('localStorage', JSON.stringify(storedArray));
+  }
+}
+
+function retrieveLocalStorage(){
+  var retrievedArray = JSON.parse(localStorage.getItem("localStorage"));
+  priorSearchEl = document.querySelector('#priorSearch');
+  priorSearchEl.innerHTML = '';
+  if(priorSearchEl !== undefined && priorSearchEl !== null){
+    for(var i = 0; i<retrievedArray.length; i++){
+      liEl = document.createElement('li');
+      liEl.classList.add('list-group-item', 'm-2', 'border-2', 'border', 'border-success');
+      liEl.innerHTML = retrievedArray[i];
+      priorSearchEl.appendChild(liEl);
     }
   }
-
-  function retrieveLocalStorage(){
-    var number = JSON.parse(localStorage.getItem("searchNumber"));
-    dropDownEl = document.querySelector('#dropDown');
-    if(number !== undefined && number !== null){
-      for(var i = 1; i<=number; i++){
-        liEl = document.createElement('li');
-        liEl.classList.add('nav-item');
-        var aEl = document.createElement('a');
-        aEl.classList.add('nav-link', 'fs-4', 'title');
-        aEl.innerHTML = JSON.parse(localStorage.getItem(`search${i}`));
-        dropDownEl.appendChild(liEl);
-        liEl.appendChild(aEl);
-      }
-    }
-  }
+}
+retrieveLocalStorage();
