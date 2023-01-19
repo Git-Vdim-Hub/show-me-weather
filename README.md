@@ -2,64 +2,31 @@
 
 ## Description
 
-Provide a short description explaining the what, why, and how of your project. Use the following questions as a guide:
+A weather application that allows a user to retrieve weather information per city. This app runs in the browser and features dynamically updated HTML and CSS powered by vanilla js. 
 
-- What was your motivation?
-- Why did you build this project? (Note: the answer is not "Because it was a homework assignment.")
-- What problem does it solve?
-- What did you learn?
-
-## Table of Contents (Optional)
-
-If your README is long, add a table of contents to make it easy for users to find what they need.
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Credits](#credits)
-- [License](#license)
+- To help re-inforce foundational coding knowledge I have built a weather and forecast web application.
+- Overall this project helps individuals track weather in the city of their choosing.
+- During this project I used two APIs to call weather and location data. Additionally, I spent time in the DOM using vanilla js to create, append and call html elements. Additionally I worked with event listeners and timing. I also worked with bootstrap to style the page. dayjs() was used to retrieve and format dates. Finally, local browser storage was used to store and retrieve information.
 
 ## Installation
 
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
+No additional installation is required to deploy this project.
 
 ## Usage
 
-Provide instructions and examples for use. Include screenshots as needed.
+Instructions and examples for use including screenshots and github repo/page.
 
-To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
+- Click link to view repo: [Github Repo](https://github.com/Git-Vdim-Hub/show-me-weather)
+- Click link to view deployed webpage: [Github Pages](https://git-vdim-hub.github.io/show-me-weather/)
 
-    ```md
-    ![alt text](assets/images/screenshot.png)
-    ```
+- Screenshots
 
-## Credits
-
-List your collaborators, if any, with links to their GitHub profiles.
-
-If you used any third-party assets that require attribution, list the creators with links to their primary web presence in this section.
-
-If you followed tutorials, include links to those here as well.
+![Main Page](./assets/images/screenshot.png)
 
 ## License
 
-The last section of a high-quality README file is the license. This lets other developers know what they can and cannot do with your project. If you need help choosing a license, refer to [https://choosealicense.com/](https://choosealicense.com/).
-
----
-
-🏆 The previous sections are the bare minimum, and your project will ultimately determine the content of this document. You might also want to consider adding the following sections.
-
-## Badges
-
-![badmath](https://img.shields.io/github/languages/top/lernantino/badmath)
-
-Badges aren't necessary, per se, but they demonstrate street cred. Badges let other developers know that you know what you're doing. Check out the badges hosted by [shields.io](https://shields.io/). You may not understand what they all represent now, but you will in time.
-
-## Features
-
-If your project has a lot of features, list them here.
-
-## How to Contribute
-
-If you created an application or package and would like other developers to contribute it, you can include guidelines for how to do so. The [Contributor Covenant](https://www.contributor-covenant.org/) is an industry standard, but you can always write your own if you'd prefer.
+ [MIT](https://choosealicense.com/)
 
 ## Tests
+
+Completed Basic Functionality Testing including making sure all buttons work, and weather information is displayed. .

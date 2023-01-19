@@ -5,13 +5,21 @@ var lat;
 var units = 'imperial';
 var searchButton = document.querySelector('#wxSearch');
 var cityInput = document.querySelector('#cityInput');
-
+var priorSearch = document.querySelector('#priorSearch');
+//listening for clicks on seach button to pass in city name and retrieve the local storage
 searchButton.addEventListener('click', function(event){
-  getWxLatLon(cityInput.value);
-  saveToLocalStorage(cityInput.value);
-  retrieveLocalStorage();
+  console.log(cityInput.value);
+  if(cityInput.value !== undefined && cityInput.value !== null && cityInput.value !== ''){
+    getWxLatLon(cityInput.value);
+    saveToLocalStorage(cityInput.value);
+    retrieveLocalStorage();
+  }
 });
-
+//listening for clicks on prior searches
+priorSearch.addEventListener('click', function(event){
+  getWxLatLon(event.target.textContent);
+})
+//gets the current weather and the latitude and longitude of the city passed in
 function getWxLatLon(cityName){
   var requestGEO = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=${units}&appid=${apiKey}`;
   fetch(requestGEO)
@@ -19,14 +27,13 @@ function getWxLatLon(cityName){
       if(response.ok){
         response.json().then(function(data){
           //temp, wind, wxIcon, humidity, dtg
-        console.log(data);
+        //console.log(data);
         lat = data.coord.lat;
         lon = data.coord.lon;
         var cityName = data.name;
         var temp = data.main.temp;
         var wind = data.wind.speed;
         var icon = data.weather[0].icon;
-        console.log(icon);
         var hum = data.main.humidity;
         displayWeather(cityName, icon, temp, wind, hum);
         getForecast(lat, lon);
@@ -40,7 +47,7 @@ function getWxLatLon(cityName){
       alert('Unable to connect to geocoding API');
         })
 }
-
+//retrieves the forecast for the weather API and calls todays forecast with the data to display
 function getForecast(lat, lon) {
     var temp1;
     var wind1;
@@ -123,13 +130,13 @@ function getForecast(lat, lon) {
           alert('Unable to connect to openweathermap API');
         })
 }
-
+//displays the weather icon
 function displayWeatherIcon(appendEl, iconCode){
     var imgEl = document.createElement("img");
     imgEl.src = `http://openweathermap.org/img/wn/${iconCode}.png`
     appendEl.appendChild(imgEl);
 }
-
+//displays today's weather calls the weather icon and day js for the current date
 function displayWeather(cityName, icon, temp, wind, hum){
   var date = dayjs().format('ddd, D MMM YY');
   var weatherDisplay = document.querySelector('#day0');
@@ -156,7 +163,7 @@ function displayWeather(cityName, icon, temp, wind, hum){
   innerDiv.appendChild(humP);
   
 }
-
+//displays each of the days of the five day forecast
 function displayDayForecast(functIcon, funcTemp, funcWind, funcHumidity, funcWhen, dayNum){
     var mark = funcWhen;
     wxEl = document.querySelector(`#day${dayNum}`);
@@ -171,7 +178,7 @@ function displayDayForecast(functIcon, funcTemp, funcWind, funcHumidity, funcWhe
     wxWindP.classList.add('card-text', 'text-start');
     wxHumP = document.createElement('p');
     wxHumP.classList.add('card-text', 'text-start');
-    wxDateP.innerHTML = `${dayjs(mark).format('ddd, D MMM YYYY')}`;
+    wxDateP.innerHTML = `${dayjs(mark).format('ddd, D MMM YY')}`;
     displayWeatherIcon(wxIconP, functIcon);
     wxTempP.innerHTML = `Temp: ${funcTemp} °F`;
     wxWindP.innerHTML = `Wind: ${funcWind} MPH`;
@@ -182,7 +189,7 @@ function displayDayForecast(functIcon, funcTemp, funcWind, funcHumidity, funcWhe
     wxEl.appendChild(wxWindP);
     wxEl.appendChild(wxHumP);
 }
-
+// displays the five day forecast
 function displayForecast(functIcon1, funcTemp1, funcWind1, funcHumidity1, funcWhen1, functIcon2, funcTemp2,
   funcWind2, funcHumidity2, funcWhen2, functIcon3, funcTemp3, funcWind3, funcHumidity3, funcWhen3,
   functIcon4, funcTemp4, funcWind4, funcHumidity4, funcWhen4, functIcon5, funcTemp5, funcWind5, funcHumidity5, funcWhen5,){
@@ -192,7 +199,7 @@ function displayForecast(functIcon1, funcTemp1, funcWind1, funcHumidity1, funcWh
   displayDayForecast(functIcon4, funcTemp4, funcWind4, funcHumidity4, funcWhen4, 4);
   displayDayForecast(functIcon5, funcTemp5, funcWind5, funcHumidity5, funcWhen5, 5);
 };
-
+//saves your search to local storage
 function saveToLocalStorage(searchValue){
   var storedArray = JSON.parse(localStorage.getItem("localStorage"));
   if(storedArray !== undefined && storedArray !== null){
@@ -202,22 +209,29 @@ function saveToLocalStorage(searchValue){
     storedArray.push(searchValue);
     localStorage.setItem('localStorage', JSON.stringify(storedArray));
   } else{
-    storedArray=[searchValue];
+    storedArray = [];
+    storedArray.push(searchValue);
     localStorage.setItem('localStorage', JSON.stringify(storedArray));
   }
 }
-
+//gets the local storage and displays the prior searches on the left hand side
 function retrieveLocalStorage(){
   var retrievedArray = JSON.parse(localStorage.getItem("localStorage"));
   priorSearchEl = document.querySelector('#priorSearch');
   priorSearchEl.innerHTML = '';
-  if(priorSearchEl !== undefined && priorSearchEl !== null){
+  if(retrievedArray !== undefined && retrievedArray !== null){
     for(var i = 0; i<retrievedArray.length; i++){
       liEl = document.createElement('li');
-      liEl.classList.add('list-group-item', 'm-2', 'border-2', 'border', 'border-success');
+      liEl.classList.add('list-group-item', 'list-group-item-action', 'm-2', 'border-2', 'border', 'border-success');
       liEl.innerHTML = retrievedArray[i];
+      liEl.id = `search${i}`;
       priorSearchEl.appendChild(liEl);
     }
   }
 }
-retrieveLocalStorage();
+//initializes the website
+function init(){
+  retrieveLocalStorage();
+  getWxLatLon('Rochester');
+}
+init();
